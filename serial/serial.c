@@ -68,8 +68,10 @@ int main(void)
 	
 	multicore_launch_core1(core1_entry);
 
-	uint32_t pins[] = {8, 9, 10, 11};
-	t_stepper *s = init_stepper(pins);
+	uint32_t pins1[] = {8, 9, 10, 11};
+	uint32_t pins2[] = {12, 13, 14, 15};
+	t_stepper *s1 = init_stepper(pins1);
+	t_stepper *s1 = init_stepper(pins2);
 
 	uint32_t delay = 0;
 	int32_t dir = 0;
@@ -84,28 +86,9 @@ int main(void)
 		if (delay < 1250) continue;
 		else if (dir > 0) dir = 1;
 		else dir = -1;
-		half_step(s, dir);
+		half_step(s1, dir);
 		sleep_us(delay);
 	}	
 
-	uint8_t c;
-	const uint32_t pin = PICO_DEFAULT_LED_PIN;
-	gpio_init(pin);
-	gpio_set_dir(pin, GPIO_OUT);
-	while (1)
-	{
-		c = getchar();
-		// printf("%c\n", c);
-		if (c == '1')
-		{
-			gpio_put(pin, 1);
-			printf("LED on\n");
-		}
-		else if (c == '0')
-		{
-			gpio_put(pin, 0);
-			printf("LED off\n");
-		}
-	}
 	return 0;
 }
