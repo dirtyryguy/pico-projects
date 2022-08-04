@@ -6,7 +6,6 @@
 #define DELAY 1250
 
 const uint32_t half_seq[] = {1, 3, 2, 6, 4, 12, 8, 9};
-const uint32_t full_seq[] = {3, 6, 12, 9};
 
 typedef struct
 {
@@ -91,10 +90,10 @@ int main(void)
 	
 	multicore_launch_core1(core1_entry);
 
-	uint32_t pins1[] = {8, 9, 10, 11};
-	uint32_t pins2[] = {12, 13, 14, 15};
-	t_stepper *s1 = init_stepper(pins1);
-	t_stepper *s2 = init_stepper(pins2);
+	uint32_t pins1[] = {8, 9, 10, 11, 16};
+	uint32_t pins2[] = {12, 13, 14, 15, 17};
+	t_stepper *s_pan = init_stepper(pins1);
+	t_stepper *s_tilt = init_stepper(pins2);
 
 	uint32_t delay = 0;
 	int32_t dir = 0;
@@ -109,7 +108,8 @@ int main(void)
 		if (delay < 1250) continue;
 		else if (dir > 0) dir = 1;
 		else dir = -1;
-		half_step(s1, dir);
+		half_step(s_pan, dir);
+		half_step(s_tilt, dir);
 		sleep_us(delay);
 	}	
 
