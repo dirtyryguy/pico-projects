@@ -64,19 +64,30 @@ void zero(t_stepper *s, int dir)
 			half_step(s, dir);
 			sleep_us(1750);
 		}
-	}	
+	}
+	s->pos = 0;
 }
-	
+
+int sign(int x)
+{
+	if (x > 0)
+		return 1;
+	else if (x < 0)
+		return -1;
+	return 0;
+}
+
+int32_t pos_p = 0, pos_t = 0;
+
 // core 1 main
 void core1_entry(void)
 {
-	uint32_t delay, dir;
+	float p, t;
 	while (1)
 	{
-		scanf("%i,%i", &delay, &dir);
-		//printf("stepping: %i in dir: %i\n", delay, dir);
-		multicore_fifo_push_blocking(delay);
-		multicore_fifo_push_blocking(dir);
+		scanf("%f,%f", &p, &t);
+		pos_p = (int)(2624./360.)*p;
+		pos_t = (int)(1472./360.)*t;
 	}
 }
 
@@ -89,29 +100,20 @@ int main(void)
 		sleep_ms(50);
 	
 	multicore_launch_core1(core1_entry);
-
+	
 	uint32_t pins1[] = {8, 9, 10, 11, 16};
 	uint32_t pins2[] = {12, 13, 14, 15, 17};
 	t_stepper *s_pan = init_stepper(pins1);
 	t_stepper *s_tilt = init_stepper(pins2);
 
-	uint32_t delay = 0;
-	int32_t dir = 0;
 	while (1)
 	{
-		if (multicore_fifo_rvalid())
-		{
-			delay = multicore_fifo_pop_blocking();
-			dir = (int32_t)multicore_fifo_pop_blocking();
-			printf("%i, %i\n", delay, dir);
-		}
-		if (delay < 1250) continue;
-		else if (dir > 0) dir = 1;
-		else dir = -1;
-		half_step(s_pan, dir);
-		half_step(s_tilt, dir);
-		sleep_us(delay);
-	}	
-
+		if (s_pan->pos != pos_p)
+			half_step(s_pan, sign(pos_p - s_pan->pos));
+		if (s_tilt->pos != pos_t)
+			half_step(s_tilt, sign(pos_t - s_tilt->pos));
+		sleep_us(1250);
+	}
+	
 	return 0;
 }
