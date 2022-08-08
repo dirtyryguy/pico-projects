@@ -106,8 +106,8 @@ int main(void)
 		{
 			zero(s_pan0);
 			zero(s_tilt0);
-			zero(s_pan1);
-			zero(s_tilt1);
+			//zero(s_pan1);
+			//zero(s_tilt1);
 			_zer0 = 0;
 		}
 
@@ -115,10 +115,10 @@ int main(void)
 			half_step(s_pan0, sign(pos_t[0] - s_pan0->pos));
 
 		if (s_tilt0->pos != pos_t[1])
-			half_step(s_tilt0, sign(pos_t[2] - s_tilt0->pos));
+			half_step(s_tilt0, sign(pos_t[1] - s_tilt0->pos));
 
 		if (s_pan1->pos != pos_t[2])
-			half_step(s_pan1, sign(pos_t[3] - s_pan1->pos));
+			half_step(s_pan1, sign(pos_t[2] - s_pan1->pos));
 
 		if (s_tilt1->pos != pos_t[3])
 			half_step(s_tilt1, sign(pos_t[3] - s_tilt1->pos));
