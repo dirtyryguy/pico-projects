@@ -42,32 +42,6 @@ void half_step(t_stepper *s, int dir)
 		gpio_put(s->pins[i], (half_seq[s->curr_step] >> (3-i)) & 1);
 }
 
-void zero(t_stepper *s, int dir)
-{
-	if (dir) // if dir is 0, the program will choose the shortest path
-	{
-		while (!gpio_get(s->pins[4]))
-		{
-			half_step(s, dir);
-			sleep_us(1750);
-		}
-	}
-	else
-	{
-		if (s->pos > 0)
-			dir = -1;
-		else
-			dir = 1;
-
-		while (gpio_get(s->pins[4]))
-		{
-			half_step(s, dir);
-			sleep_us(1750);
-		}
-	}
-	s->pos = 0;
-}
-
 int sign(int x)
 {
 	if (x > 0)
@@ -77,17 +51,33 @@ int sign(int x)
 	return 0;
 }
 
-int32_t pos_p = 0, pos_t = 0;
+void zero(t_stepper *s)
+{
+	int i = s->pos;
+	if (i == 0)
+		return;
+	while (1)
+	{
+		half_step(s, sign(0 - i));
+		sleep_us(1750);
+		if (gpio_get(s->pins[4]))
+		{
+			printf("%i\n", gpio_get(s->pins[4]));
+			break;
+		}
+	}
+	s->pos = 0;
+}
+
+int32_t pos_t[4], _zer0;
 
 // core 1 main
 void core1_entry(void)
 {
-	float p, t;
 	while (1)
 	{
-		scanf("%f,%f", &p, &t);
-		pos_p = (int)(2624./360.)*p;
-		pos_t = (int)(1472./360.)*t;
+		scanf("%i,%i,%i,%i,%i", pos_t, pos_t+1, pos_t+2, pos_t+3, &_zer0);
+		printf("%i,%i,%i,%i,%i\n", *pos_t, *(pos_t+1), *(pos_t+2), *(pos_t+3), _zer0);
 	}
 }
 
@@ -101,17 +91,38 @@ int main(void)
 	
 	multicore_launch_core1(core1_entry);
 	
-	uint32_t pins1[] = {8, 9, 10, 11, 16};
-	uint32_t pins2[] = {12, 13, 14, 15, 17};
-	t_stepper *s_pan = init_stepper(pins1);
-	t_stepper *s_tilt = init_stepper(pins2);
+	uint32_t pins1[] = {0, 1, 2, 3, 16};
+	uint32_t pins2[] = {4, 5, 6, 7, 17};
+	uint32_t pins3[] = {8, 9, 10, 11, 18};
+	uint32_t pins4[] = {12, 13, 14, 15, 19};
+	t_stepper *s_pan0 = init_stepper(pins1);
+	t_stepper *s_tilt0 = init_stepper(pins2);
+	t_stepper *s_pan1 = init_stepper(pins3);
+	t_stepper *s_tilt1 = init_stepper(pins4);
 
 	while (1)
 	{
-		if (s_pan->pos != pos_p)
-			half_step(s_pan, sign(pos_p - s_pan->pos));
-		if (s_tilt->pos != pos_t)
-			half_step(s_tilt, sign(pos_t - s_tilt->pos));
+		if (_zer0)
+		{
+			zero(s_pan0);
+			zero(s_tilt0);
+			zero(s_pan1);
+			zero(s_tilt1);
+			_zer0 = 0;
+		}
+
+		if (s_pan0->pos != pos_t[0])
+			half_step(s_pan0, sign(pos_t[0] - s_pan0->pos));
+
+		if (s_tilt0->pos != pos_t[1])
+			half_step(s_tilt0, sign(pos_t[2] - s_tilt0->pos));
+
+		if (s_pan1->pos != pos_t[2])
+			half_step(s_pan1, sign(pos_t[3] - s_pan1->pos));
+
+		if (s_tilt1->pos != pos_t[3])
+			half_step(s_tilt1, sign(pos_t[3] - s_tilt1->pos));
+
 		sleep_us(1250);
 	}
 	
