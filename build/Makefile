@@ -246,6 +246,19 @@ temp/fast:
 	$(MAKE) $(MAKESILENT) -f temp/CMakeFiles/temp.dir/build.make temp/CMakeFiles/temp.dir/build
 .PHONY : temp/fast
 
+#=============================================================================
+# Target rules for targets named shift
+
+# Build rule for target.
+shift: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 shift
+.PHONY : shift
+
+# fast build rule for target.
+shift/fast:
+	$(MAKE) $(MAKESILENT) -f shift/CMakeFiles/shift.dir/build.make shift/CMakeFiles/shift.dir/build
+.PHONY : shift/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -262,6 +275,7 @@ help:
 	@echo "... cyw43_firmware_package"
 	@echo "... bs2_default"
 	@echo "... serial"
+	@echo "... shift"
 	@echo "... stepper"
 	@echo "... temp"
 .PHONY : help

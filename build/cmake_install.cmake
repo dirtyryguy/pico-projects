@@ -43,6 +43,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/Users/dirtyryguy/pico/pico-projects/build/stepper/cmake_install.cmake")
   include("/Users/dirtyryguy/pico/pico-projects/build/serial/cmake_install.cmake")
   include("/Users/dirtyryguy/pico/pico-projects/build/temp/cmake_install.cmake")
+  include("/Users/dirtyryguy/pico/pico-projects/build/shift/cmake_install.cmake")
 
 endif()
 

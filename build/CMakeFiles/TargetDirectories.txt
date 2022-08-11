@@ -162,3 +162,6 @@
 /Users/dirtyryguy/pico/pico-projects/build/temp/CMakeFiles/temp.dir
 /Users/dirtyryguy/pico/pico-projects/build/temp/CMakeFiles/edit_cache.dir
 /Users/dirtyryguy/pico/pico-projects/build/temp/CMakeFiles/rebuild_cache.dir
+/Users/dirtyryguy/pico/pico-projects/build/shift/CMakeFiles/shift.dir
+/Users/dirtyryguy/pico/pico-projects/build/shift/CMakeFiles/edit_cache.dir
+/Users/dirtyryguy/pico/pico-projects/build/shift/CMakeFiles/rebuild_cache.dir

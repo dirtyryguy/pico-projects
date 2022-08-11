@@ -24,3 +24,4 @@ add_compile_options(-Wall
 add_subdirectory(stepper)
 add_subdirectory(serial)
 add_subdirectory(temp)
+add_subdirectory(shift)
